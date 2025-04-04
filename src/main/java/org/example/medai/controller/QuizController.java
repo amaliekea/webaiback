@@ -1,7 +1,7 @@
 package org.example.medai.controller;
 
 import org.example.medai.dto.StudyQuestion;
-import org.example.medai.service.MedAIService;
+import org.example.medai.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 @CrossOrigin(origins = "*")
 @RestController
-public class HealthController {
+public class QuizController {
     @Autowired
-    private final MedAIService medAIService;
+    private final QuizService quizService;
 
-    public HealthController(MedAIService medAIService) {
-        this.medAIService = medAIService;
+    public QuizController(QuizService quizService) {
+        this.quizService = quizService;
     }
     @Value("${openai.api.key}")
     private String openapikey;
@@ -32,7 +32,7 @@ public class HealthController {
 
     @PostMapping("/study-helper")
     public Map<String, Object> studyHelper(@RequestBody StudyQuestion question) {
-        return medAIService.explainTopicWithGPT(question);
+        return quizService.explainTopicWithGPT(question);
     }
 
 }

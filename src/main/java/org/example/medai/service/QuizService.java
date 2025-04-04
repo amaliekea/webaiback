@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class MedAIService {
+public class QuizService {
 
     private final WebClient openAiWebClient;
     private final WebClient pubMedWebClient;
     private final WebClient quizApiWebClient;
 
     @Autowired
-    public MedAIService(WebClient.Builder webClientBuilder) {
+    public QuizService(WebClient.Builder webClientBuilder) {
         this.openAiWebClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build();
         this.pubMedWebClient = webClientBuilder.baseUrl("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/").build();
         this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build();
