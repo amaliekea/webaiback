@@ -19,6 +19,11 @@ public class QuizController {
     @Value("${openai.api.key}")
     private String openapikey;
 
+    @Value("${QUIZAPIKEY}")
+    private String quizapikey;
+
+
+
     @GetMapping("/key")
     public String key() {
         return openapikey;
