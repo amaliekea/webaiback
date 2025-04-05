@@ -14,7 +14,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Denne klasse håndterer quiz-funktioner ved hjælp af AI.
+ * Den bruger OpenAI til at forklare emner, og quizapi.io til at hente quizspørgsmål.
+ * Bruges af controlleren til at give svar til frontend.
+ */
 @Service
 public class QuizService {
 
@@ -34,15 +38,26 @@ public class QuizService {
     private String quizapikey;
 
 
+    /**
+     * Kalder OpenAI og genererer en forklaring baseret på brugerens spørgsmål.
+     *
+     * @param question Brugerens input med emne, niveau og evt. quizønske
+     * @return Et map med AI'ens svar (Choices)
+     */
     public Map<String, Object> explainTopicWithGPT(StudyQuestion question) {
+        List<Message> lstMessages = new ArrayList<>();
+
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setModel("gpt-3.5-turbo");
         requestDTO.setTemperature(0.7);
-        requestDTO.setMaxTokens(500);
+        requestDTO.setMaxTokens(800);
+        requestDTO.setTopP(1.0);
+        requestDTO.setFrequencyPenalty(0.2);
+        requestDTO.setPresencePenalty(0.3);
+        requestDTO.setMessages(lstMessages);
 
-        List<Message> lstMessages = new ArrayList<>();
 
-        String basePrompt = "Forklar emnet '" + question.getTopic() + "' som om det blev forklaret til en " + question.getLevel() + ".";
+        String basePrompt = "Forklar emnet '" + question.getTopic() + "' på dansk for en elev på " + question.getLevel() + "-niveau.";
 
         // Brug quizapi.io data som kontekst hvis inkluderet
         if (question.isIncludeQuiz()) {
@@ -69,6 +84,12 @@ public class QuizService {
         return map;
     }
 
+    /**
+     * Henter quizspørgsmål fra quizapi.io baseret på en kategori.
+     *
+     * @param category Emne eller type (fx "code")
+     * @return JSON-string med quizspørgsmål
+     */
     public String fetchQuizQuestions(String category) {
         return quizApiWebClient.get()
                 .uri(uriBuilder -> uriBuilder

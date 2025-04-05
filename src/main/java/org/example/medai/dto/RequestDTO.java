@@ -7,35 +7,51 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import javax.annotation.processing.Generated;
 import java.util.List;
 
+/**
+ * DTO til at sende data til OpenAI API.
+ * Indeholder modelnavn, temperatur, max tokens og beskeder.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "model",
         "messages",
         "temperature",
+        "top_p",
         "max_tokens",
+        "frequency_penalty",
         "presence_penalty",
-        "stop"
 })
 @Generated("jsonschema2pojo")
 public class RequestDTO {
+    /** Navnet på GPT-modellen */
     @JsonProperty("model")
     private String model;
 
+    /** Liste med beskeder til GPT */
     @JsonProperty("messages")
     private List<Message> messages;
 
+    /** Hvor kreativt GPT skal svare (0–1) */
     @JsonProperty("temperature")
     private Double temperature;
 
+    /** Alternativ til temperature (0–1) */
+    @JsonProperty("top_p")
+    private Double topP;
+
+    /** Maksimalt antal tokens i svaret */
     @JsonProperty("max_tokens")
     private Integer maxTokens;
 
+    /** Straffer gentagelser i svaret */
+    @JsonProperty("frequency_penalty")
+    private Double frequencyPenalty;
 
+    /** Skubber GPT til at være mere kreativ */
     @JsonProperty("presence_penalty")
     private Double presencePenalty;
 
-    @JsonProperty("stop")
-    private List<String> stop;
+    // Getters og setters
 
     @JsonProperty("model")
     public String getModel() {
@@ -67,6 +83,16 @@ public class RequestDTO {
         this.temperature = temperature;
     }
 
+    @JsonProperty("top_p")
+    public Double getTopP() {
+        return topP;
+    }
+
+    @JsonProperty("top_p")
+    public void setTopP(Double topP) {
+        this.topP = topP;
+    }
+
     @JsonProperty("max_tokens")
     public Integer getMaxTokens() {
         return maxTokens;
@@ -77,25 +103,23 @@ public class RequestDTO {
         this.maxTokens = maxTokens;
     }
 
+    @JsonProperty("frequency_penalty")
+    public Double getFrequencyPenalty() {
+        return frequencyPenalty;
+    }
 
-    @JsonProperty("presencePenalty")
+    @JsonProperty("frequency_penalty")
+    public void setFrequencyPenalty(Double frequencyPenalty) {
+        this.frequencyPenalty = frequencyPenalty;
+    }
+
+    @JsonProperty("presence_penalty")
     public Double getPresencePenalty() {
         return presencePenalty;
     }
 
-    @JsonProperty("presencePenalty")
+    @JsonProperty("presence_penalty")
     public void setPresencePenalty(Double presencePenalty) {
         this.presencePenalty = presencePenalty;
-    }
-
-
-    @JsonProperty("stop")
-    public List<String> getStop() {
-        return stop;
-    }
-
-    @JsonProperty("stop")
-    public void setStop(List<String> stop) {
-        this.stop = stop;
     }
 }
