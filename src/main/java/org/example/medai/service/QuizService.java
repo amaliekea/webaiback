@@ -19,16 +19,13 @@ import java.util.Map;
 public class QuizService {
 
     private final WebClient openAiWebClient;
-    private final WebClient pubMedWebClient;
     private final WebClient quizApiWebClient;
 
     @Autowired
     public QuizService(WebClient.Builder webClientBuilder) {
         this.openAiWebClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build();
-        this.pubMedWebClient = webClientBuilder.baseUrl("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/").build();
         this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build();
     }
-
 
     @Value("${openai.api.key}")
     private String openapikey;
@@ -36,42 +33,6 @@ public class QuizService {
     @Value("${quizapi.api.key}")
     private String quizapikey;
 
-
-    public Map<String, Object> promptWebAI(String question, String pubMedData) {
-        RequestDTO requestDTO = new RequestDTO();
-        requestDTO.setModel("gpt-3.5-turbo");
-        requestDTO.setTemperature(1.0);
-        requestDTO.setMaxTokens(200);
-
-        List<Message> lstMessages = new ArrayList<>();
-        lstMessages.add(new Message("system", "You are a helpful medical assistant. Here is some PubMed data: " + pubMedData));
-        lstMessages.add(new Message("user", question));
-
-        requestDTO.setMessages(lstMessages);
-
-        // Send forespørgsel til OpenAI API
-        ResponseDTO response = openAiWebClient.post()
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(h -> h.setBearerAuth(openapikey))
-                .bodyValue(requestDTO)
-                .retrieve()
-                .bodyToMono(ResponseDTO.class)
-                .block();
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("Choices", response.getChoices());
-        return map;
-    }
-
-    // Hent PubMed data baseret på symptomer
-    public String fetchPubMedData(String query) {
-        String url = String.format("esearch.fcgi?db=pubmed&term=%s", query); // søgning
-        return pubMedWebClient.get()
-                .uri(url)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-    }
 
     public Map<String, Object> explainTopicWithGPT(StudyQuestion question) {
         RequestDTO requestDTO = new RequestDTO();
