@@ -29,16 +29,17 @@ public class QuizController {
         return openapikey;
     }
 
-//    @GetMapping("/test")
-//    public Map<String, Object> test() {
-//        Map<String, Object> testmap = medAIService.promptWebAI();
-//        return testmap;
-//    }
 
     @PostMapping("/study-helper")
     public Map<String, Object> studyHelper(@RequestBody StudyQuestion question) {
         return quizService.explainTopicWithGPT(question);
     }
+
+//        @GetMapping("/test")
+//    public Map<String, Object> test() {
+//        Map<String, Object> testmap = medAIService.promptWebAI();
+//        return testmap;
+//    }
 
 }
 

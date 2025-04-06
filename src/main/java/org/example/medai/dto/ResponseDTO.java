@@ -8,6 +8,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Denne klasse bruges til at gemme svaret fra OpenAI API.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "id",
@@ -75,6 +78,9 @@ public class ResponseDTO {
         this.model = model;
     }
 
+    /**
+     * @return Listen af svarmuligheder (choices) genereret af GPT
+     */
     @JsonProperty("choices")
     public List<Choice> getChoices() {
         return choices;
@@ -100,6 +106,14 @@ public class ResponseDTO {
         return this.additionalProperties;
     }
 
+    /**
+     * Tilføjer en ekstra egenskab, som ikke er beskrevet som et standardfelt.
+     *
+     * Bruges fx hvis OpenAI sender nye felter, som ikke allerede findes i klassen.
+     *
+     * @param name Navnet på egenskaben
+     * @param value Værdien af egenskaben
+     */
     @JsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
