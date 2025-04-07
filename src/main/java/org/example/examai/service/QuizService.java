@@ -56,8 +56,7 @@ public class QuizService {
         requestDTO.setPresencePenalty(0.3);
         requestDTO.setMessages(lstMessages);
 
-
-        String basePrompt = "Forklar emnet '" + question.getTopic() + "' på dansk for en elev på " + question.getLevel() + "-niveau.";
+        String basePrompt = "explain the topic '" + question.getTopic() + "' on danish for a student on" + question.getLevel() + "-niveau.";
 
         // Brug quizapi.io data som kontekst hvis inkluderet
         if (question.isIncludeQuiz()) {
