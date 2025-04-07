@@ -1,12 +1,12 @@
 
-package org.example.medai.dto;
+package org.example.examai.dto;
 
 import com.fasterxml.jackson.annotation.*;
 
 import javax.annotation.processing.Generated;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
+//Denne klasse Choice bruges til at repræsentere et svarvalg fra OpenAI's API,
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "index",

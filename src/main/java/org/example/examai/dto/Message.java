@@ -1,11 +1,12 @@
-package org.example.medai.dto;
+package org.example.examai.dto;
 
 import com.fasterxml.jackson.annotation.*;
 
 import javax.annotation.processing.Generated;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
+//denne klasse bruges til at repræsentere en besked, som brugeren sender ind når den interegerer med chatten
+//vi bruger Message-objekter til at gemme indholdet og afsenderen af beskeden. Den er også brugt i Choice-klassen som vi lige så.
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "role",

@@ -1,4 +1,4 @@
-package org.example.medai;
+package org.example.examai;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

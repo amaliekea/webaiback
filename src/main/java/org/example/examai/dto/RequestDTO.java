@@ -1,4 +1,4 @@
-package org.example.medai.dto;
+package org.example.examai.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,6 +11,12 @@ import java.util.List;
  * DTO til at sende data til OpenAI API.
  * Indeholder modelnavn, temperatur, max tokens og beskeder.
  */
+// bruges til at oprette en request
+// klassen indeholder informationer om hvilken model jeg bruger
+//samtalen indeholder en message
+//hvor kreavtiv gpt skal være (temperature)
+//hvor langt svaret må være (max tokens)
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "model",
@@ -23,31 +29,45 @@ import java.util.List;
 })
 @Generated("jsonschema2pojo")
 public class RequestDTO {
-    /** Navnet på GPT-modellen */
+    /**
+     * Navnet på GPT-modellen
+     */
     @JsonProperty("model")
     private String model;
 
-    /** Liste med beskeder til GPT */
+    /**
+     * Liste med beskeder til GPT
+     */
     @JsonProperty("messages")
     private List<Message> messages;
 
-    /** Hvor kreativt GPT skal svare (0–1) */
+    /**
+     * Hvor kreativt GPT skal svare (0–1)
+     */
     @JsonProperty("temperature")
     private Double temperature;
 
-    /** Alternativ til temperature (0–1) */
+    /**
+     * Alternativ til temperature (0–1)
+     */
     @JsonProperty("top_p")
     private Double topP;
 
-    /** Maksimalt antal tokens i svaret */
+    /**
+     * Maksimalt antal tokens i svaret
+     */
     @JsonProperty("max_tokens")
     private Integer maxTokens;
 
-    /** Straffer gentagelser i svaret */
+    /**
+     * Straffer gentagelser i svaret
+     */
     @JsonProperty("frequency_penalty")
     private Double frequencyPenalty;
 
-    /** Skubber GPT til at være mere kreativ */
+    /**
+     * Skubber GPT til at være mere kreativ
+     */
     @JsonProperty("presence_penalty")
     private Double presencePenalty;
 

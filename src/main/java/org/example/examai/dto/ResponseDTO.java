@@ -1,7 +1,6 @@
-package org.example.medai.dto;
+package org.example.examai.dto;
 
 import com.fasterxml.jackson.annotation.*;
-import jakarta.persistence.GeneratedValue;
 
 import javax.annotation.processing.Generated;
 import java.util.LinkedHashMap;
