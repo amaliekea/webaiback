@@ -33,9 +33,6 @@ public class QuizController {
     @PostMapping("/study-helper")
     public Map<String, Object> studyHelper(@RequestBody StudyQuestion question) {
         System.out.println("studyhelper ackend ramt");
-        question.setTopic("linux");
-        question.setLevel("2");
-        question.setIncludeQuiz(true);
         System.out.println("QUESTION SEND " + question);
         return quizService.explainTopicWithGPT(question);
     }
