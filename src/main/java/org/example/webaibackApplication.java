@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MedAiApplication {
+public class webaibackApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MedAiApplication.class, args);
+        SpringApplication.run(webaibackApplication.class, args);
     }
 
 }
