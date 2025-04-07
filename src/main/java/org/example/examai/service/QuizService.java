@@ -44,7 +44,7 @@ public class QuizService {
      * @param question Brugerens input med emne, niveau og evt. quizønske
      * @return Et map med AI'ens svar (Choices)
      */
-    public Map<String, Object> explainTopicWithGPT(StudyQuestion question) {
+    public String explainTopicWithGPT(StudyQuestion question) {
         List<Message> lstMessages = new ArrayList<>();
 
         RequestDTO requestDTO = new RequestDTO();
@@ -61,11 +61,11 @@ public class QuizService {
         // Brug quizapi.io data som kontekst hvis inkluderet
         if (question.isIncludeQuiz()) {
             String quizData = fetchQuizQuestions("code"); // kategori kan ændres
-            basePrompt += " Her er nogle spørgsmål om emnet: " + quizData;
-            basePrompt += " Brug dem som inspiration og lav 2 nye quizspørgsmål til sidst.";
+            basePrompt += " Here a ome questions about the subject: " + quizData;
+            basePrompt += " Use them as inspiration and make 2 new quizquestions at last.";
         }
 
-        lstMessages.add(new Message("system", "Du er en hjælpsom underviser."));
+        lstMessages.add(new Message("system", "you are a helpfull tutor."));
         lstMessages.add(new Message("user", basePrompt));
 
         requestDTO.setMessages(lstMessages);
@@ -80,7 +80,10 @@ public class QuizService {
 
         Map<String, Object> map = new HashMap<>();
         map.put("Choices", response.getChoices());
-        return map;
+        
+        String gptresponse = response.getChoices().getFirst().getMessage().getContent();
+        
+        return gptresponse;
     }
 
     /**
@@ -100,6 +103,5 @@ public class QuizService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-
     }
 }
