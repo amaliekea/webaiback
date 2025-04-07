@@ -1,7 +1,7 @@
-package org.example.medai.exception;
+package org.example.examai.exception;
 
 import java.util.Date;
-
+//Denne klasse repræsenter en fejlbesked
 public class ErrorMessage {
     private int statusCode;
     private Date timeStamp;

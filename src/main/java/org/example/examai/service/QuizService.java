@@ -1,9 +1,9 @@
-package org.example.medai.service;
+package org.example.examai.service;
 
-import org.example.medai.dto.Message;
-import org.example.medai.dto.RequestDTO;
-import org.example.medai.dto.ResponseDTO;
-import org.example.medai.dto.StudyQuestion;
+import org.example.examai.dto.Message;
+import org.example.examai.dto.RequestDTO;
+import org.example.examai.dto.ResponseDTO;
+import org.example.examai.dto.StudyQuestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;

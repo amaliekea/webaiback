@@ -1,4 +1,4 @@
-package org.example.medai.dto;
+package org.example.examai.dto;
 
 public class StudyQuestion {
     private String topic;
