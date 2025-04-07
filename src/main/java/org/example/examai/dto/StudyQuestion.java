@@ -34,4 +34,13 @@ public class StudyQuestion {
     public void setIncludeQuiz(boolean includeQuiz) {
         this.includeQuiz = includeQuiz;
     }
+
+    @Override
+    public String toString() {
+        return "StudyQuestion{" +
+                "topic='" + topic + '\'' +
+                ", level='" + level + '\'' +
+                ", includeQuiz=" + includeQuiz +
+                '}';
+    }
 }
