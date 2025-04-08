@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
- //Denne klasse håndterer quiz-funktioner ved hjælp af AI.
+//Denne klasse håndterer quiz-funktioner ved hjælp af AI.
 // Den bruger OpenAI til at forklare emner, og quizapi.io til at hente quizspørgsmål.
 // Bruges af controlleren til at give svar til frontend.
 
@@ -39,7 +39,7 @@ public class QuizService {
 
 
     public String explainTopicWithGPT(StudyQuestion question) { //modtager et studyquestion oprindeligt fra frontend
-        List<Message> lstMessages = new ArrayList<>();
+        List<Message> lstMessages = new ArrayList<>(); //opretter liste af beskeder som openai får
 
         //sætter parametre for modellen, for at modelere svaret
         RequestDTO requestDTO = new RequestDTO();

@@ -34,5 +34,4 @@ public class UserController {
                     .body("Error occurred: " + e.getMessage());
         }
     }
-
 }
