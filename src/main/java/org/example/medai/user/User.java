@@ -1,12 +1,10 @@
 package org.example.medai.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
 @Entity
+@Table(name = "app_user") //fik fejl med en tabel i db må ikke hedde user, derfor gav jeg nyt navn
 public class User {
 
     @Id
