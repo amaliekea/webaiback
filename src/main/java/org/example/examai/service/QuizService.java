@@ -23,27 +23,32 @@ import java.util.Map;
 public class QuizService {
 
     private final WebClient openAiWebClient;
+    private final WebClient mistralWebClient;
     private final WebClient quizApiWebClient;
 
     @Autowired
     public QuizService(WebClient.Builder webClientBuilder) {
         this.openAiWebClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build(); //kalder OpenAI’s chat/completions endpoint.
+        this.mistralWebClient = webClientBuilder.baseUrl("https://api.mistral.ai/v1/chat/completions").build(); // kalder quizAPI.io’s root-URL.
         this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build(); // kalder quizAPI.io’s root-URL.
     }
 
     @Value("${OPENAPIKEY}")
     private String openapikey;
 
+    @Value("${MISTRALAPIKEY}")
+    private String mistralApiKey;
+
     @Value("${QUIZAPIKEY}")
     private String quizapikey;
 
 
-    public String explainTopicWithGPT(StudyQuestion question) { //modtager et studyquestion oprindeligt fra frontend
+    public String explainTopic(StudyQuestion question, String model) { //modtager et studyquestion oprindeligt fra frontend
         List<Message> lstMessages = new ArrayList<>(); //opretter liste af beskeder som openai får
 
         //sætter parametre for modellen i vores request, for at modelere svaret
         RequestDTO requestDTO = new RequestDTO();
-        requestDTO.setModel("gpt-3.5-turbo");
+        requestDTO.setModel(model);
         requestDTO.setTemperature(0.7);
         requestDTO.setMaxTokens(800);
         requestDTO.setTopP(1.0);
@@ -77,15 +82,17 @@ public class QuizService {
 
         requestDTO.setMessages(lstMessages);
 
+        WebClient client = determineWebClient(model);
+
         //nedenstående sender request til openAi
-        ResponseDTO response = openAiWebClient.post()
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(h -> h.setBearerAuth(openapikey))
-                .bodyValue(requestDTO)
-                .retrieve()
-                //svaret mappes til response
-                .bodyToMono(ResponseDTO.class)
-                .block();
+        ResponseDTO response = client.post()
+            .contentType(MediaType.APPLICATION_JSON)
+            .headers(h -> h.setBearerAuth(determineApiKey(model)))
+            .bodyValue(requestDTO)
+            .retrieve()
+            //svaret mappes til response
+            .bodyToMono(ResponseDTO.class)
+            .block();
 
 
         //svaret retuneres som en simpel streng
@@ -94,7 +101,7 @@ public class QuizService {
         return gptresponse;
     }
 
-//denne metode bruges til at hente quiz fra vores api
+    //denne metode bruges til at hente quiz fra vores api
     public String fetchQuizQuestions(String category, String difficulty) {
         return quizApiWebClient.get() //vi sender en get
                 .uri(uriBuilder -> uriBuilder
@@ -107,5 +114,27 @@ public class QuizService {
                 .retrieve()
                 .bodyToMono(String.class) //retunerer JSON som en streng
                 .block();
+    }
+
+    private String determineApiKey(String model) {
+        switch (model) {
+            case "gpt-3.5-turbo":
+                return openapikey;
+            case "mistral-small-latest":
+                return mistralApiKey;
+            default:
+                return "";
+        }
+    }
+
+    private WebClient determineWebClient(String model) {
+        switch (model) {
+            case "gpt-3.5-turbo":
+                return openAiWebClient;
+            case "mistral-small-latest":
+                return mistralWebClient;
+            default:
+                return mistralWebClient;
+        }
     }
 }
