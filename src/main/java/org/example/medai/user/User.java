@@ -10,8 +10,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userID;
-
+    
+    @Column(unique = true)
     private String username;
+
     private String pword;
 
     public long getUserID() {

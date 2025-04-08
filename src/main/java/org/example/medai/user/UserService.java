@@ -17,4 +17,12 @@ public class UserService {
         return user != null && user.getPword().equals(pword);
     }
 
+    public void saveUser(User user) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new RuntimeException("Username already taken");
+        }
+        userRepository.save(user);
+    }
+
+
 }

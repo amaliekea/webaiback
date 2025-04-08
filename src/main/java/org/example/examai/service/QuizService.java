@@ -31,10 +31,10 @@ public class QuizService {
         this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build();
     }
 
-    @Value("${openai.api.key}")
+    @Value("${OPENAPIKEY}")
     private String openapikey;
 
-    @Value("${quizapi.api.key}")
+    @Value("${QUIZAPIKEY}")
     private String quizapikey;
 
 
