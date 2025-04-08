@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-/**
- * Denne klasse håndterer quiz-funktioner ved hjælp af AI.
- * Den bruger OpenAI til at forklare emner, og quizapi.io til at hente quizspørgsmål.
- * Bruges af controlleren til at give svar til frontend.
- */
+
+ //Denne klasse håndterer quiz-funktioner ved hjælp af AI.
+// Den bruger OpenAI til at forklare emner, og quizapi.io til at hente quizspørgsmål.
+// Bruges af controlleren til at give svar til frontend.
+
 @Service
 public class QuizService {
 
@@ -27,8 +27,8 @@ public class QuizService {
 
     @Autowired
     public QuizService(WebClient.Builder webClientBuilder) {
-        this.openAiWebClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build();
-        this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build();
+        this.openAiWebClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build(); //kalder OpenAI’s chat/completions endpoint.
+        this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build(); // kalder quizAPI.io’s root-URL.
     }
 
     @Value("${OPENAPIKEY}")
@@ -38,15 +38,10 @@ public class QuizService {
     private String quizapikey;
 
 
-    /**
-     * Kalder OpenAI og genererer en forklaring baseret på brugerens spørgsmål.
-     *
-     * @param question Brugerens input med emne, niveau og evt. quizønske
-     * @return Et map med AI'ens svar (Choices)
-     */
-    public String explainTopicWithGPT(StudyQuestion question) {
+    public String explainTopicWithGPT(StudyQuestion question) { //modtager et studyquestion oprindeligt fra frontend
         List<Message> lstMessages = new ArrayList<>();
 
+        //sætter parametre for modellen, for at modelere svaret
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setModel("gpt-3.5-turbo");
         requestDTO.setTemperature(0.7);
@@ -56,7 +51,7 @@ public class QuizService {
         requestDTO.setPresencePenalty(0.3);
         requestDTO.setMessages(lstMessages);
 
-        String basePrompt = "explain the topic '" + question.getTopic() + "' on danish for a student on" + question.getLevel() + "-niveau.";
+        String basePrompt = "explain the topic '" + question.getTopic() + "for a student on" + question.getLevel() + "-niveau.";
         // Vi vil gerne map brugerens niveau/level til sværhedsgraden af svar fra API's
         String difficultyLevel = question.getLevel();
 
@@ -72,8 +67,8 @@ public class QuizService {
         // Brug quizapi.io data som kontekst hvis inkluderet
         if (question.isIncludeQuiz()) {
             String quizData = fetchQuizQuestions(question.getTopic(), difficultyLevel);
-            basePrompt += " Here a ome questions about the subject: " + quizData;
-            basePrompt += " Use them as inspiration and make 2 new quizquestions at last.";
+            basePrompt += " Here a quiz about the subject: " + quizData;
+            basePrompt += " Use them as inspiration and make 2 ekstra new quizquestions at last.";
         }
 
         lstMessages.add(new Message("system", "you are a helpfull tutor."));
@@ -97,7 +92,7 @@ public class QuizService {
         return gptresponse;
     }
 
-//denne metode bruges til at hente quic fra vores api
+//denne metode bruges til at hente quiz fra vores api
     public String fetchQuizQuestions(String category, String difficulty) {
         return quizApiWebClient.get() //vi sender en get
                 .uri(uriBuilder -> uriBuilder

@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 @CrossOrigin(origins = "*") //giver alle adgang til at hente data fra min backend
 @RestController //Gør klassen til en web-controller, der kan håndtere HTTP-requests.
 public class QuizController {
-    @Autowired
+
+    @Autowired //burde laves om da autowired er deprecated
     private final QuizService quizService;
 
     public QuizController(QuizService quizService) {
@@ -20,29 +20,15 @@ public class QuizController {
     @Value("${OPENAPIKEY}") //henter nøgler fra pplication.prop
     private String openapikey;
 
-    @Value("${QUIZAPIKEY}")
-    private String quizapikey;
 
-
-    @GetMapping("/key")
+    @GetMapping("/key") // til test af nøgle
     public String key() {
         return openapikey;
     }
 
-
     @PostMapping("/study-helper")
-    public String studyHelper(@RequestBody StudyQuestion question) {
-        System.out.println("studyhelper ackend ramt");
-        System.out.println("QUESTION SEND " + question);
-        System.out.println(quizService.explainTopicWithGPT(question));
-        return quizService.explainTopicWithGPT(question);
+    public String studyHelper(@RequestBody StudyQuestion question) { //vi tager et studyquestion ind
+        return quizService.explainTopicWithGPT(question); //kalder metoden i service der retunerer en streng
     }
-
-//        @GetMapping("/test")
-//    public Map<String, Object> test() {
-//        Map<String, Object> testmap = medAIService.promptWebAI();
-//        return testmap;
-//    }
-
 }
 
