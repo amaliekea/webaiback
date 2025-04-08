@@ -41,7 +41,7 @@ public class QuizService {
     public String explainTopicWithGPT(StudyQuestion question) { //modtager et studyquestion oprindeligt fra frontend
         List<Message> lstMessages = new ArrayList<>(); //opretter liste af beskeder som openai får
 
-        //sætter parametre for modellen, for at modelere svaret
+        //sætter parametre for modellen i vores request, for at modelere svaret
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setModel("gpt-3.5-turbo");
         requestDTO.setTemperature(0.7);
@@ -51,6 +51,7 @@ public class QuizService {
         requestDTO.setPresencePenalty(0.3);
         requestDTO.setMessages(lstMessages);
 
+        //dynamisk byggelse af promt ud fra brugerens input
         String basePrompt = "explain the topic '" + question.getTopic() + "for a student on" + question.getLevel() + "-niveau.";
         // Vi vil gerne map brugerens niveau/level til sværhedsgraden af svar fra API's
         String difficultyLevel = question.getLevel();
@@ -64,7 +65,7 @@ public class QuizService {
             };
         }
 
-        // Brug quizapi.io data som kontekst hvis inkluderet
+        //tilføj quiz hvis brugeren har indtastet true
         if (question.isIncludeQuiz()) {
             String quizData = fetchQuizQuestions(question.getTopic(), difficultyLevel);
             basePrompt += " Here a quiz about the subject: " + quizData;
@@ -76,17 +77,18 @@ public class QuizService {
 
         requestDTO.setMessages(lstMessages);
 
+        //nedenstående sender request til openAi
         ResponseDTO response = openAiWebClient.post()
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(h -> h.setBearerAuth(openapikey))
                 .bodyValue(requestDTO)
                 .retrieve()
+                //svaret mappes til response
                 .bodyToMono(ResponseDTO.class)
                 .block();
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("Choices", response.getChoices());
-        
+
+        //svaret retuneres som en simpel streng
         String gptresponse = response.getChoices().getFirst().getMessage().getContent();
         
         return gptresponse;
@@ -98,12 +100,12 @@ public class QuizService {
                 .uri(uriBuilder -> uriBuilder
                         .path("/questions")
                         .queryParam("category", category)
-                        .queryParam("difficulty", difficulty)
+                        .queryParam("difficulty", difficulty) //sætter sværhedsgraden easy, medium..
                         .queryParam("limit", 3) //henter 3 spørgsmål
                         .build())
                 .header("X-Api-Key", quizapikey)
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(String.class) //retunerer JSON som en streng
                 .block();
     }
 }
