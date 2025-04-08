@@ -57,10 +57,21 @@ public class QuizService {
         requestDTO.setMessages(lstMessages);
 
         String basePrompt = "explain the topic '" + question.getTopic() + "' on danish for a student on" + question.getLevel() + "-niveau.";
+        // Vi vil gerne map brugerens niveau/level til sværhedsgraden af svar fra API's
+        String difficultyLevel = question.getLevel();
+
+        if (difficultyLevel != null) {
+             difficultyLevel = switch (question.getLevel().toLowerCase()) {
+                case "low" -> "Easy";
+                case "medium" -> "Medium";
+                case "high" -> "Hard";
+                default -> "Medium";
+            };
+        }
 
         // Brug quizapi.io data som kontekst hvis inkluderet
         if (question.isIncludeQuiz()) {
-            String quizData = fetchQuizQuestions("code"); // kategori kan ændres
+            String quizData = fetchQuizQuestions(question.getTopic(), difficultyLevel);
             basePrompt += " Here a ome questions about the subject: " + quizData;
             basePrompt += " Use them as inspiration and make 2 new quizquestions at last.";
         }
@@ -86,18 +97,14 @@ public class QuizService {
         return gptresponse;
     }
 
-    /**
-     * Henter quizspørgsmål fra quizapi.io baseret på en kategori.
-     *
-     * @param category Emne eller type (fx "code")
-     * @return JSON-string med quizspørgsmål
-     */
-    public String fetchQuizQuestions(String category) {
-        return quizApiWebClient.get()
+//denne metode bruges til at hente quic fra vores api
+    public String fetchQuizQuestions(String category, String difficulty) {
+        return quizApiWebClient.get() //vi sender en get
                 .uri(uriBuilder -> uriBuilder
                         .path("/questions")
                         .queryParam("category", category)
-                        .queryParam("limit", 3)
+                        .queryParam("difficulty", difficulty)
+                        .queryParam("limit", 3) //henter 3 spørgsmål
                         .build())
                 .header("X-Api-Key", quizapikey)
                 .retrieve()

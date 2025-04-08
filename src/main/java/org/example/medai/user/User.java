@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
 @Entity
+@Table(name = "app_user") //fik fejl med en tabel i db må ikke hedde user, derfor gav jeg nyt navn
 public class User {
 
     @Id
