@@ -2,7 +2,7 @@ package org.example.examai.dto;
 
 public class StudyQuestion {
     private String topic;
-    private String level; // fx "10-årig", "ekspert", "mellemniveau"
+    private String level; // fx "low", "medium", "high"
     private boolean includeQuiz;
 
     public StudyQuestion(String topic, String level, boolean includeQuiz) {
