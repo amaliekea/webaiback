@@ -5,6 +5,9 @@ public class StudyQuestion {
     private String level; // fx "low", "medium", "high"
     private boolean includeQuiz;
 
+    public StudyQuestion(){
+
+    }
     public StudyQuestion(String topic, String level, boolean includeQuiz) {
         this.topic = topic;
         this.level = level;
