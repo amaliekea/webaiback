@@ -32,6 +32,8 @@ public class QuizService {
         //this.mistralWebClient = webClientBuilder.baseUrl("https://api.mistral.ai/v1/chat/completions").build(); // kalder quizAPI.io’s root-URL.
         this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build(); // kalder quizAPI.io’s root-URL.
     }
+    @Autowired
+    ArticleApiService articleApiService; //for at bruge vores metode til at hente artikler
 
     @Value("${OPENAPIKEY}")
     private String openapikey;
@@ -76,6 +78,11 @@ public class QuizService {
             basePrompt += " Here a quiz about the subject: " + quizData;
             basePrompt += " Use them as inspiration and make 2 ekstra new quizquestions at last.";
         }
+        //tilføj artikel
+        String article = articleApiService.fetchArticle(question.getTopic());
+        basePrompt += " Here you can read more about the topic:\n\"" + article + "\"\nPlease include this knowledge in your explanation.";
+
+        System.out.println("Artikel fundet: " + article);
 
         lstMessages.add(new Message("system", "you are a helpfull tutor."));
         lstMessages.add(new Message("user", basePrompt));
