@@ -1,9 +1,6 @@
 package org.example.examai.service;
 
-import org.example.examai.dto.Message;
-import org.example.examai.dto.RequestDTO;
-import org.example.examai.dto.ResponseDTO;
-import org.example.examai.dto.StudyQuestion;
+import org.example.examai.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -72,7 +69,7 @@ public class QuizService {
 
         //tilføj quiz hvis brugeren har indtastet true
         if (question.isIncludeQuiz()) {
-            String quizData = fetchQuizQuestions(question.getTopic(), difficultyLevel);
+            List<QuizQuestionDTO> quizData = fetchQuizQuestions(question.getTopic(), difficultyLevel);
             basePrompt += " Here a quiz about the subject: " + quizData;
             basePrompt += " Use them as inspiration and make 2 ekstra new quizquestions at last.";
         }
@@ -101,7 +98,7 @@ public class QuizService {
 
 
     //denne metode bruges til at hente quiz fra vores api
-    public String fetchQuizQuestions(String category, String difficulty) {
+    public List<QuizQuestionDTO> fetchQuizQuestions(String category, String difficulty) {
         return quizApiWebClient.get() //vi sender en get
                 .uri(uriBuilder -> uriBuilder
                         .path("/questions")
@@ -111,9 +108,27 @@ public class QuizService {
                         .build())
                 .header("X-Api-Key", quizapikey)
                 .retrieve()
-                .bodyToMono(String.class) //retunerer JSON som en streng
+                .bodyToFlux(QuizQuestionDTO.class)
+                .collectList()
                 .block();
     }
+
+    public int calculateCorrectAnswers(List<QuizAnswerDTO> submittedAnswers) {
+        int correctCount = 0;
+
+        for (QuizAnswerDTO answer : submittedAnswers) {
+            if (answer.getUserAnswer() != null &&
+                    answer.getUserAnswer().equalsIgnoreCase(answer.getCorrectAnswer())) {
+                answer.setCorrect(true);
+                correctCount++;
+            } else {
+                answer.setCorrect(false);
+            }
+        }
+
+        return correctCount;
+    }
+
 
 //
 //    private String determineApiKey(String model) {
