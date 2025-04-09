@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 //Denne klasse håndterer quiz-funktioner ved hjælp af AI.
 // Den bruger OpenAI til at forklare emner, og quizapi.io til at hente quizspørgsmål.
@@ -30,6 +28,7 @@ public class QuizService {
         this.openAiWebClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build(); //kalder OpenAI’s chat/completions endpoint.
         this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build(); // kalder quizAPI.io’s root-URL.
     }
+
     @Autowired
     ArticleApiService articleApiService; //for at bruge vores metode til at hente artikler
 
@@ -54,18 +53,9 @@ public class QuizService {
         requestDTO.setMessages(lstMessages);
 
         //dynamisk byggelse af promt ud fra brugerens input
-        String basePrompt = "explain the topic '" + question.getTopic() + "for a student on" + question.getLevel() + "-niveau.";
-        // Vi vil gerne map brugerens niveau/level til sværhedsgraden af svar fra API's
-        String difficultyLevel = question.getLevel();
+        String basePrompt = "explain the topic '" + question.getTopic() + "for a student on a" + question.getLevel() + "-niveau.";
 
-        if (difficultyLevel != null) {
-            difficultyLevel = switch (question.getLevel().toLowerCase()) {
-                case "low" -> "Easy";
-                case "medium" -> "Medium";
-                case "high" -> "Hard";
-                default -> "Medium";
-            };
-        }
+        String difficultyLevel = question.getLevel();
 
         //tilføj quiz hvis brugeren har indtastet true
         if (question.isIncludeQuiz()) {
@@ -75,11 +65,13 @@ public class QuizService {
         }
         //tilføj artikel
         String article = articleApiService.fetchArticle(question.getTopic());
-        basePrompt += " Here you can read more about the topic:\n\"" + article + "\"\nPlease include this knowledge in your explanation.";
+        basePrompt += "\nBelow is an article. You MUST always end your answers with, here is a article if you want to read more about technology:\n" +
+                "\"" + article + "\"\n" +
+                "Be sure to refer to this article explicitly in your answer.";
 
         System.out.println("Artikel fundet: " + article);
 
-        lstMessages.add(new Message("system", "you are a helpfull tutor."));
+        lstMessages.add(new Message("system", "You are a helpful tutor."));
         lstMessages.add(new Message("user", basePrompt));
 
         requestDTO.setMessages(lstMessages);
