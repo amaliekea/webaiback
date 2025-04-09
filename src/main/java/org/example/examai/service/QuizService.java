@@ -36,7 +36,7 @@ public class QuizService {
 
     @Value("${QUIZAPIKEY}")
     private String quizapikey;
-
+//hej
 
     public String explainTopicWithGPT(StudyQuestion question) { //modtager et studyquestion oprindeligt fra frontend
         List<Message> lstMessages = new ArrayList<>(); //opretter liste af beskeder som openai får
