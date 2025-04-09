@@ -26,9 +26,9 @@ public class QuizController {
         return openapikey;
     }
 
-
-    @PostMapping("/study-helper/{model}")
-    public String studyHelper(@RequestBody StudyQuestion question, @PathVariable String model) { //vi tager et studyquestion ind
-        return quizService.explainTopic(question, model); //kalder metoden i service der retunerer en streng
+    @PostMapping("/study-helper")
+    public String studyHelper(@RequestBody StudyQuestion question) { //vi tager et studyquestion ind
+        return quizService.explainTopicWithGPT(question); //kalder metoden i service der retunerer en streng
     }
+
 }
