@@ -22,12 +22,12 @@ import java.util.Map;
 @Service
 public class QuizService {
 
-    private final WebClient openAiWebClient;
+    private final OpenAIService openAIService;
     private final WebClient quizApiWebClient;
 
     @Autowired
-    public QuizService(WebClient.Builder webClientBuilder) {
-        this.openAiWebClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build(); //kalder OpenAI’s chat/completions endpoint.
+    public QuizService(WebClient.Builder webClientBuilder, OpenAIService openAIService) {
+        this.openAIService = openAIService; //kalder OpenAI’s chat/completions endpoint.
         this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build(); // kalder quizAPI.io’s root-URL.
     }
     @Autowired
@@ -40,103 +40,47 @@ public class QuizService {
     private String quizapikey;
 
 
-    public String explainTopicWithGPT(StudyQuestion question) { //modtager et studyquestion oprindeligt fra frontend
-        List<Message> lstMessages = new ArrayList<>(); //opretter liste af beskeder som openai får
+    public String explainTopicWithGPT(StudyQuestion question) {
+        List<Message> messages = new ArrayList<>();
 
-        //sætter parametre for modellen i vores request, for at modelere svaret
-        RequestDTO requestDTO = new RequestDTO();
-        requestDTO.setModel("gpt-3.5-turbo");
-        requestDTO.setTemperature(0.7);
-        requestDTO.setMaxTokens(800);
-        requestDTO.setTopP(1.0);
-        requestDTO.setFrequencyPenalty(0.2);
-        requestDTO.setPresencePenalty(0.3);
-        requestDTO.setMessages(lstMessages);
+        String prompt = "explain the topic '" + question.getTopic() + "' for a student on " + question.getLevel() + "-niveau.";
+        String level = switch (question.getLevel().toLowerCase()) {
+            case "low" -> "Easy";
+            case "medium" -> "Medium";
+            case "high" -> "Hard";
+            default -> "Medium";
+        };
 
-        //dynamisk byggelse af promt ud fra brugerens input
-        String basePrompt = "explain the topic '" + question.getTopic() + "for a student on" + question.getLevel() + "-niveau.";
-        // Vi vil gerne map brugerens niveau/level til sværhedsgraden af svar fra API's
-        String difficultyLevel = question.getLevel();
-
-        if (difficultyLevel != null) {
-            difficultyLevel = switch (question.getLevel().toLowerCase()) {
-                case "low" -> "Easy";
-                case "medium" -> "Medium";
-                case "high" -> "Hard";
-                default -> "Medium";
-            };
-        }
-
-        //tilføj quiz hvis brugeren har indtastet true
         if (question.isIncludeQuiz()) {
-            String quizData = fetchQuizQuestions(question.getTopic(), difficultyLevel);
-            basePrompt += " Here a quiz about the subject: " + quizData;
-            basePrompt += " Use them as inspiration and make 2 ekstra new quizquestions at last.";
+            String quizData = fetchQuizQuestions(question.getTopic(), level);
+            prompt += " Here is a quiz about the subject: " + quizData;
+            prompt += " Use them as inspiration and make 2 extra new quizquestions at the end.";
         }
-        //tilføj artikel
+
         String article = articleApiService.fetchArticle(question.getTopic());
-        basePrompt += " Here you can read more about the topic:\n\"" + article + "\"\nPlease include this knowledge in your explanation.";
+        prompt += " Here is an article about the topic:\n\"" + article + "\"\nPlease include this knowledge in your explanation.";
 
-        System.out.println("Artikel fundet: " + article);
+        messages.add(new Message("system", "you are a helpful tutor."));
+        messages.add(new Message("user", prompt));
 
-        lstMessages.add(new Message("system", "you are a helpfull tutor."));
-        lstMessages.add(new Message("user", basePrompt));
-
-        requestDTO.setMessages(lstMessages);
-
-        //nedenstående sender request til openAi
-        ResponseDTO response = openAiWebClient.post()
-                .contentType(MediaType.APPLICATION_JSON)
-                .headers(h -> h.setBearerAuth(openapikey))
-                .bodyValue(requestDTO)
-                .retrieve()
-                //svaret mappes til response
-                .bodyToMono(ResponseDTO.class)
-                .block();
-
-
-        //svaret retuneres som en simpel streng
-        String gptresponse = response.getChoices().getFirst().getMessage().getContent();
-
-        return gptresponse;
+        return openAIService.getResponseFromOpenAI(messages);
     }
 
-
-    //denne metode bruges til at hente quiz fra vores api
     public String fetchQuizQuestions(String category, String difficulty) {
-        return quizApiWebClient.get() //vi sender en get
-                .uri(uriBuilder -> uriBuilder
-                        .path("/questions")
-                        .queryParam("category", category)
-                        .queryParam("difficulty", difficulty) //sætter sværhedsgraden easy, medium..
-                        .queryParam("limit", 3) //henter 3 spørgsmål
-                        .build())
-                .header("X-Api-Key", quizapikey)
-                .retrieve()
-                .bodyToMono(String.class) //retunerer JSON som en streng
-                .block();
+        try {
+            return quizApiWebClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/questions")
+                            .queryParam("category", category)
+                            .queryParam("difficulty", difficulty)
+                            .queryParam("limit", 3)
+                            .build())
+                    .header("X-Api-Key", quizapikey)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (Exception e) {
+            return "Could not fetch quiz questions: " + e.getMessage();
+        }
     }
-
-//
-//    private String determineApiKey(String model) {
-//        switch (model) {
-//            case "gpt-3.5-turbo":
-//                return openapikey;
-//            case "mistral-small-latest":
-//                return mistralApiKey;
-//            default:
-//                return "";
-//        }
-//    }
-//
-//    private WebClient determineWebClient(String model) {
-//        switch (model) {
-//            case "gpt-3.5-turbo":
-//                return openAiWebClient;
-//            case "mistral-small-latest":
-//                return mistralWebClient;
-//            default:
-//                return mistralWebClient;
-//        }
-//    }
 }
