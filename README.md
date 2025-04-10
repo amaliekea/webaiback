@@ -17,8 +17,8 @@ It uses external APIs to generate explanations, quiz questions, and related arti
 
 1. The user sends a topic, a difficulty level (`low`, `medium`, or `high`), and whether a quiz should be included.
 2. The backend responds with:
-   - A generated explanation
-   - Quiz questions (if requested)
+   - A generated explanation  
+   - Quiz questions (if requested)  
    - A short article summary
 
 ---
@@ -30,32 +30,4 @@ It uses external APIs to generate explanations, quiz questions, and related arti
   "topic": "Java Streams",
   "level": "medium",
   "includeQuiz": true
-} ``` 
----
-## Configuration and Technologies Used
-
-Add your API keys in the `application.properties` file:
-OPENAPIKEY=your_openai_api_key
-QUIZAPIKEY=your_quizapi_key
-ARTICLEAPIKEY=your_newsapi_key
-
-To verify that your OpenAI key is working, you can call:
-GET /key
----
-🔨 Technologies Used
-	•	Java 17
-	•	Spring Boot
-	•	WebClient (for async HTTP requests)
-	•	OpenAI API
-	•	QuizAPI.io
-	•	NewsAPI.org
-
-⸻
-
-👩‍💻 Developed By
-	•	https://github.com/AndersNystrupJ
-	•	https://github.com/zuunun
-	•	https://github.com/Aluna0001
-
-3rd Semester Computer Science Students (Datamatiker)
-This backend was created as part of an academic assignment.
+}
