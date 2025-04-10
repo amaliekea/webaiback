@@ -33,8 +33,6 @@ It uses external APIs to generate explanations, quiz questions, and related arti
 }
 ---
 
-⸻
-
 👩‍💻 Developed By
 	•	https://github.com/AndersNystrupJ
    •	https://github.com/amaliekea
