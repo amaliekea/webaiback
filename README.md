@@ -30,7 +30,7 @@ It uses external APIs to generate explanations, quiz questions, and related arti
   "topic": "Java Streams",
   "level": "medium",
   "includeQuiz": true
-}
+} ``` 
 ---
 ## Configuration and Technologies Used
 
