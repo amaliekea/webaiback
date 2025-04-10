@@ -32,6 +32,12 @@ It uses external APIs to generate explanations, quiz questions, and related arti
   "includeQuiz": true
 }
 
+⸻
+
+Configuration and Technologies Used
+
+Add your API keys in the application.properties file:
+
 ## 👩‍💻 Developed By
 	•	https://github.com/AndersNystrupJ
         •	https://github.com/amaliekea
