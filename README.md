@@ -31,7 +31,7 @@ It uses external APIs to generate explanations, quiz questions, and related arti
   "level": "medium",
   "includeQuiz": true
 }
----
+
 ## 👩‍💻 Developed By
 	•	https://github.com/AndersNystrupJ
         •	https://github.com/amaliekea
