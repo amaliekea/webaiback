@@ -8,7 +8,7 @@ It uses external APIs to generate explanations, quiz questions, and related arti
 ## 🔍 Features
 
 - Generates explanations using the **OpenAI API**
-- Adds quiz questions from **QuizAPI.io** 
+- Adds quiz questions from **QuizAPI.io**
 - Includes a related article from **NewsAPI**
 
 ---
@@ -31,26 +31,41 @@ It uses external APIs to generate explanations, quiz questions, and related arti
   "level": "medium",
   "includeQuiz": true
 }
----
+```
 
-Configuration and Technologies Used
+## Configuration and Technologies Used
 
-Add your API keys in the application.properties file:
+Add your API keys in the `application.properties` file:
+
+```
 OPENAPIKEY=your_openai_api_key  
 QUIZAPIKEY=your_quizapi_key  
 ARTICLEAPIKEY=your_newsapi_key
----
+```
+
+To verify that your OpenAI key is working, you can call:
+
+```
+GET /key
+```
 
 This backend uses:
-	•	Java 17
-	•	Spring Boot
-	•	WebClient (for async HTTP requests)
-	•	OpenAI API
-	•	QuizAPI.io
-	•	NewsAPI.org
+
+- Java 17  
+- Spring Boot  
+- WebClient (for async HTTP requests)  
+- OpenAI API  
+- QuizAPI.io  
+- NewsAPI.org
+
 ---
+
 ## 👩‍💻 Developed By
-	•	https://github.com/AndersNystrupJ
-        •	https://github.com/amaliekea
-	•	https://github.com/zuunun
-	•	https://github.com/Aluna0001
+
+- https://github.com/AndersNystrupJ  
+- https://github.com/amaliekea  
+- https://github.com/zuunun  
+- https://github.com/Aluna0001
+
+3rd Semester Computer Science Students (Datamatiker)  
+_This backend was created as part of an academic assignment._
