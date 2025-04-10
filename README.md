@@ -31,13 +31,24 @@ It uses external APIs to generate explanations, quiz questions, and related arti
   "level": "medium",
   "includeQuiz": true
 }
-
-⸻
+---
 
 Configuration and Technologies Used
 
 Add your API keys in the application.properties file:
+OPENAPIKEY=your_openai_api_key  
+QUIZAPIKEY=your_quizapi_key  
+ARTICLEAPIKEY=your_newsapi_key
+---
 
+This backend uses:
+	•	Java 17
+	•	Spring Boot
+	•	WebClient (for async HTTP requests)
+	•	OpenAI API
+	•	QuizAPI.io
+	•	NewsAPI.org
+---
 ## 👩‍💻 Developed By
 	•	https://github.com/AndersNystrupJ
         •	https://github.com/amaliekea
