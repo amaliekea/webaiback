@@ -32,9 +32,9 @@ It uses external APIs to generate explanations, quiz questions, and related arti
   "includeQuiz": true
 }
 ---
-##🔐 Configuration
+## Configuration and Technologies Used
 
-Add your API keys in the application.properties file:
+Add your API keys in the `application.properties` file:
 OPENAPIKEY=your_openai_api_key
 QUIZAPIKEY=your_quizapi_key
 ARTICLEAPIKEY=your_newsapi_key
