@@ -1,7 +1,5 @@
 package org.example.examai.service;
 
-import org.example.examai.dto.Article;
-import org.example.examai.dto.NewsApiResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,11 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.*;
+
 import reactor.core.publisher.Mono;
 
-import java.util.Collections;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,37 +31,40 @@ class ArticleApiServiceTest {
         when(webClientBuilder.build()).thenReturn(mockWebClient);
 
         articleApiService = new ArticleApiService(webClientBuilder);
-
         ReflectionTestUtils.setField(articleApiService, "articleapikey", "test-key");
     }
-
-
-
     @Test
-    void fetchArticle() {
-        // Arrange
-        Article article = new Article();
-        article.setTitle("Test Title");
-        article.setDescription("Test Description");
+    void fetchArticle_returnsFormattedArticle() {
+        String jsonResponse = """
+        {
+          "status": "ok",
+          "articles": [
+            {
+              "title": "Mock Title",
+              "description": "Mock Description"
+            }
+          ]
+        }
+        """;
 
-        NewsApiResponse fakeResponse = new NewsApiResponse();
-        fakeResponse.setArticles(Collections.singletonList(article));
-
-        // Mock WebClient flow
+        // ✅ raw types
         WebClient.RequestHeadersUriSpec uriSpec = mock(WebClient.RequestHeadersUriSpec.class);
         WebClient.RequestHeadersSpec headersSpec = mock(WebClient.RequestHeadersSpec.class);
         WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
 
+        // ✅ mocking med cast
         when(mockWebClient.get()).thenReturn(uriSpec);
-        when(uriSpec.uri(any(java.util.function.Function.class))).thenReturn(headersSpec);
+        when(uriSpec.uri(any(java.util.function.Function.class)))
+                .thenReturn((WebClient.RequestHeadersSpec<?>) headersSpec);
         when(headersSpec.header(eq("X-Api-Key"), anyString())).thenReturn(headersSpec);
         when(headersSpec.retrieve()).thenReturn(responseSpec);
-        when(responseSpec.bodyToMono(NewsApiResponse.class)).thenReturn(Mono.just(fakeResponse));
+        when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.just(jsonResponse));
 
         // Act
         String result = articleApiService.fetchArticle("java");
 
         // Assert
-        assertEquals("Test Title: Test Description", result);
+        assertEquals("Mock Title: Mock Description", result);
     }
+
 }
