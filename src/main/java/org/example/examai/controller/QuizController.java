@@ -20,7 +20,6 @@ public class QuizController {
     @Value("${OPENAPIKEY}") //henter nøgler fra pplication.prop
     private String openapikey;
 
-
     @GetMapping("/key") // til test af nøgle
     public String key() {
         return openapikey;

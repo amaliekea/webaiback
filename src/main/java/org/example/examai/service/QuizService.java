@@ -2,6 +2,7 @@ package org.example.examai.service;
 
 import org.example.examai.dto.Message;
 
+import org.example.examai.dto.QuizQuestionDTO;
 import org.example.examai.dto.StudyQuestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,7 +60,7 @@ public class QuizService {
         String difficultyLevel = question.getLevel();
 
         if (question.isIncludeQuiz()) {
-            String quizData = fetchQuizQuestions(question.getTopic(), difficultyLevel);
+            List<QuizQuestionDTO> quizData = fetchQuizQuestions(question.getTopic(), difficultyLevel);
             basePrompt += " Here is a quiz about the subject: " + quizData;
             basePrompt += " Use them as inspiration and make 2 ekstra new quizquestions at last.";
         }
@@ -83,19 +84,18 @@ public class QuizService {
      * @param difficulty Niveau (fx easy, medium, hard).
      * @return En JSON-streng med quizspørgsmål.
      */
-    public String fetchQuizQuestions(String category, String difficulty) {
-        return quizApiWebClient.get() //vi sender en get
+    public List<QuizQuestionDTO> fetchQuizQuestions(String category, String difficulty) {
+        return quizApiWebClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/questions")
                         .queryParam("category", category)
-                        .queryParam("difficulty", difficulty) //sætter sværhedsgraden easy, medium..
-                        .queryParam("limit", 3) //henter 3 spørgsmål
+                        .queryParam("difficulty", difficulty)
+                        .queryParam("limit", 3)
                         .build())
                 .header("X-Api-Key", quizapikey)
                 .retrieve()
-                .bodyToMono(String.class) //retunerer JSON som en streng
-                .block();
+                .bodyToFlux(QuizQuestionDTO.class) // each element in array = 1 DTO
+                .collectList()
+                .block(); // now you get a usable list of Java objects
     }
-
-
 }
