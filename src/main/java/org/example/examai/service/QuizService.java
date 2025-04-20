@@ -5,10 +5,8 @@ import org.example.examai.dto.Message;
 import org.example.examai.dto.StudyQuestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +21,6 @@ public class QuizService {
 
     private final OpenAIService openAIService;
     private final WebClient quizApiWebClient;
-
     /**
      * Constructor med dependency injection af OpenAIService og WebClient.
      *
@@ -33,14 +30,11 @@ public class QuizService {
     @Autowired
     public QuizService(OpenAIService openAIService, WebClient.Builder webClientBuilder) {
         this.openAIService = openAIService;
-        this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build(); // kalder quizAPI.io’s root-URL.
+        this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build(); // kalder quizAPI.io's root-URL.
     }
 
     @Autowired
     ArticleApiService articleApiService; // Service til at hente artikler fra ekstern API
-
-    @Value("${OPENAPIKEY}")
-    private String openapikey;
 
     @Value("${QUIZAPIKEY}")
     private String quizapikey;
@@ -72,7 +66,6 @@ public class QuizService {
         lstMessages.add(new Message("system", "You are a helpful tutor."));
         lstMessages.add(new Message("user", basePrompt));
 
-
         return openAIService.getResponseFromOpenAI(lstMessages);
     }
 
@@ -80,7 +73,7 @@ public class QuizService {
      * Henter quizspørgsmål fra quizapi.io baseret på emne og sværhedsgrad.
      *
      * @param category   Emne/område for quizspørgsmål.
-     * @param difficulty Niveau (fx easy, medium, hard).
+     * @param difficulty Niveau fx easy, medium, hard.
      * @return En JSON-streng med quizspørgsmål.
      */
     public String fetchQuizQuestions(String category, String difficulty) {
@@ -96,6 +89,4 @@ public class QuizService {
                 .bodyToMono(String.class) //retunerer JSON som en streng
                 .block();
     }
-
-
 }
