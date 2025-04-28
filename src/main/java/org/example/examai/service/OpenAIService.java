@@ -12,31 +12,20 @@ import java.util.List;
 
 /**
  * Denne klasse håndterer kommunikation med OpenAI's API.
- * Den sender brugerens spørgsmål (som en liste af beskeder) og får svar tilbage.
+ * Den sender brugerens spørgsmål som en liste af beskeder og retunerer svar som streng
  */
 @Service
 public class OpenAIService {
 
     private final WebClient openAiWebClient;
 
-    /**
-     * Opretter en WebClient der peger på OpenAI's chat/completions endpoint.
-     *
-     * @param webClientBuilder Builder til at lave WebClient-instanser.
-     */
     public OpenAIService(WebClient.Builder webClientBuilder) {
-        this.openAiWebClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build();
+        this.openAiWebClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build(); //OpenAI's chat/completions endpoint.
     }
 
     @Value("${OPENAPIKEY}")
     private String openapikey;
 
-    /**
-     * Sender en liste af beskeder til OpenAI og får svar tilbage som tekst.
-     *
-     * @param messages Liste af beskeder, fx system- og brugerbeskeder.
-     * @return Svaret fra OpenAI som en streng.
-     */
     public String getResponseFromOpenAI(List<Message> messages) {
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setModel("gpt-3.5-turbo"); // hvilken model vi bruger
