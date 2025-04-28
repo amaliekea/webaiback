@@ -11,9 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Serviceklasse der håndterer quiz-relateret logik.
  * Henter quizspørgsmål fra quizapi.io og forklaringer fra OpenAI.
- * Tilføjer også en artikel fra en artikel-API til svaret.
+ * Tilføjer også en tech artikel fra en artikel-API til svaret.
  */
 
 @Service
@@ -22,19 +21,18 @@ public class QuizService {
     private final OpenAIService openAIService;
     private final WebClient quizApiWebClient;
     /**
-     * Constructor med dependency injection af OpenAIService og WebClient.
-     *
      * @param openAIService    Service der håndterer kald til OpenAI.
      * @param webClientBuilder WebClient-builder til at oprette forbindelser.
      */
     @Autowired
-    public QuizService(OpenAIService openAIService, WebClient.Builder webClientBuilder) {
+    public QuizService(OpenAIService openAIService, WebClient.Builder webClientBuilder) { //dependency injection
         this.openAIService = openAIService;
         this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build(); // kalder quizAPI.io's root-URL.
     }
 
     @Autowired
     ArticleApiService articleApiService; // Service til at hente artikler fra ekstern API
+
 
     @Value("${QUIZAPIKEY}")
     private String quizapikey;
@@ -71,10 +69,7 @@ public class QuizService {
 
     /**
      * Henter quizspørgsmål fra quizapi.io baseret på emne og sværhedsgrad.
-     *
-     * @param category   Emne/område for quizspørgsmål.
-     * @param difficulty Niveau fx easy, medium, hard.
-     * @return En JSON-streng med quizspørgsmål.
+     *  retunerer en JSON-streng med quizspørgsmål.
      */
     public String fetchQuizQuestions(String category, String difficulty) {
         return quizApiWebClient.get() //vi sender en get
