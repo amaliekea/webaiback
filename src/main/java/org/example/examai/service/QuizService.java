@@ -30,11 +30,12 @@ public class QuizService {
         this.quizApiWebClient = webClientBuilder.baseUrl("https://quizapi.io/api/v1").build(); // kalder quizAPI.io's root-URL.
     }
 
-    @Autowired
-    ArticleApiService articleApiService; // Service til at hente artikler fra ekstern API
+//    @Autowired
+//    ArticleApiService articleApiService; // Service til at hente artikler fra ekstern API
 
 
-    @Value("${QUIZAPIKEY}")
+
+    @Value("${_QUIZAPIKEY}")
     private String quizapikey;
 
     /**
@@ -56,13 +57,17 @@ public class QuizService {
             basePrompt += " Use them as inspiration and make 2 ekstra new quizquestions at last.";
         }
 
-        String article = articleApiService.fetchArticle(question.getTopic());
-        basePrompt += "\nBelow is an article. You MUST always end your answers with, here is an article if you want to read more about technology:\n" +
-                "\"" + article + "\"\n" +
-                "Be sure to refer to this article explicitly in your answer.";
+//        String article = articleApiService.fetchArticle(question.getTopic());
+//        basePrompt += "\nBelow is an article. You MUST always end your answers with, here is an article if you want to read more about technology:\n" +
+//                "\"" + article + "\"\n" +
+//                "Be sure to refer to this article explicitly in your answer.";
 
-        lstMessages.add(new Message("system", "You are a helpful tutor."));
-        lstMessages.add(new Message("user", basePrompt));
+        lstMessages.add(
+                new Message("system", "You are a helpful tutor.")
+        );
+        lstMessages.add(
+                new Message("user", basePrompt)
+        );
 
         return openAIService.getResponseFromOpenAI(lstMessages);
     }

@@ -20,15 +20,15 @@ public class OpenAIService {
     private final WebClient openAiWebClient;
 
     public OpenAIService(WebClient.Builder webClientBuilder) {
-        this.openAiWebClient = webClientBuilder.baseUrl("https://api.openai.com/v1/chat/completions").build(); //OpenAI's chat/completions endpoint.
+        this.openAiWebClient = webClientBuilder.baseUrl("https://api.mistral.ai/v1/chat/completions").build(); //OpenAI's chat/completions endpoint.
     }
 
-    @Value("${OPENAPIKEY}")
+    @Value("${_OPENAPIKEY}")
     private String openapikey;
 
     public String getResponseFromOpenAI(List<Message> messages) {
         RequestDTO requestDTO = new RequestDTO();
-        requestDTO.setModel("gpt-3.5-turbo"); // hvilken model vi bruger
+        requestDTO.setModel("mistral-small-latest"); // hvilken model vi bruger
         requestDTO.setTemperature(0.7); // hvor kreativt svaret skal være
         requestDTO.setMaxTokens(800); // længde på svaret
         requestDTO.setTopP(1.0); // sandsynlighedsindstilling

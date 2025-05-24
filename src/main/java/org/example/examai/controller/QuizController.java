@@ -17,7 +17,7 @@ public class QuizController {
         this.quizService = quizService;
     }
 
-    @Value("${OPENAPIKEY}") //henter nøgler fra pplication.prop
+    @Value("${_OPENAPIKEY}") //henter nøgler fra pplication.prop
     private String openapikey;
 
 
